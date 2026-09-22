@@ -304,18 +304,27 @@ nation_genre_pct["비율"] = (
     * 100
 )
 
+# 국가 x 장르 조합별로 가장 많이 본(총 관객 1위) 영화 찾기
+top_movie_idx = df_nation_major.groupby(["nation", "genre_main"])["total_audi"].idxmax()
+top_movie = df_nation_major.loc[
+    top_movie_idx, ["nation", "genre_main", "movieNm", "total_audi"]
+].rename(columns={"movieNm": "대표영화", "total_audi": "대표영화_관객"})
+
+nation_genre_pct = nation_genre_pct.merge(top_movie, on=["nation", "genre_main"], how="left")
+
 fig_nation_genre = px.bar(
     nation_genre_pct,
     x="nation",
     y="비율",
     color="genre_main",
-    custom_data=["편수"],
+    custom_data=["편수", "대표영화", "대표영화_관객"],
     labels={"nation": "제작 국가", "비율": "비율(%)", "genre_main": "장르"},
 )
 fig_nation_genre.update_traces(
     hovertemplate=(
         "국가: %{x}<br>장르: %{fullData.name}<br>"
-        "비율: %{y:.1f}%<br>편수: %{customdata[0]}편<extra></extra>"
+        "비율: %{y:.1f}%<br>편수: %{customdata[0]}편<br>"
+        "가장 많이 본 영화: %{customdata[1]} (%{customdata[2]:,}명)<extra></extra>"
     ),
 )
 fig_nation_genre.update_layout(
@@ -327,6 +336,15 @@ fig_nation_genre.update_layout(
 )
 
 st.plotly_chart(fig_nation_genre, use_container_width=True)
+
+with st.expander("국가 × 장르별 대표 영화(가장 많이 본 영화) 표로 보기"):
+    st.dataframe(
+        top_movie.sort_values(["nation", "genre_main"]).rename(
+            columns={"nation": "국가", "genre_main": "장르"}
+        ),
+        use_container_width=True,
+        hide_index=True,
+    )
 
 st.markdown("**📌 이 그래프로 알 수 있는 것**")
 st.info("여기에 이 그래프를 보고 파악한 내용을 한 문장으로 적어 보세요.")
