@@ -275,9 +275,54 @@ st.info("여기에 이 그래프를 보고 파악한 내용을 한 문장으로 
 st.divider()
 
 # ---------------------------------------------------------------------------
-# 구역 8. (다음 그래프를 위한 자리)
+# 구역 8. 나라별 선호 장르 비교 (내 질문: 나라별로 선호하는 영화 종류가 다른가?)
 # ---------------------------------------------------------------------------
-# st.header("8. ...")
+st.header("8. 나라별 선호 장르 비교")
+
+st.caption(
+    "❓ 내 질문: 나라별로 선호하는 영화 종류가 다른가? → "
+    "나라마다 장르 구성 비율을 한눈에 비교할 수 있는 **100% 누적 막대그래프**를 골랐습니다."
+)
+
+nation_movie_counts = df["nation"].value_counts()
+major_nations = nation_movie_counts[nation_movie_counts >= 5].index
+df_nation_major = df[df["nation"].isin(major_nations)]
+
+nation_genre_pct = (
+    df_nation_major.groupby(["nation", "genre_main"])
+    .size()
+    .reset_index(name="편수")
+)
+
+fig_nation_genre = px.bar(
+    nation_genre_pct,
+    x="nation",
+    y="편수",
+    color="genre_main",
+    barnorm="percent",
+    labels={"nation": "제작 국가", "편수": "비율(%)", "genre_main": "장르"},
+)
+fig_nation_genre.update_traces(
+    hovertemplate="국가: %{x}<br>장르: %{fullData.name}<br>비율: %{y:.1f}%<extra></extra>",
+)
+fig_nation_genre.update_layout(
+    xaxis_title="제작 국가",
+    yaxis_title="장르 비율(%)",
+    legend_title_text="장르",
+    margin=dict(t=30, b=30, l=10, r=10),
+)
+
+st.plotly_chart(fig_nation_genre, use_container_width=True)
+
+st.markdown("**📌 이 그래프로 알 수 있는 것**")
+st.info("여기에 이 그래프를 보고 파악한 내용을 한 문장으로 적어 보세요.")
+
+st.divider()
+
+# ---------------------------------------------------------------------------
+# 구역 9. (다음 그래프를 위한 자리)
+# ---------------------------------------------------------------------------
+# st.header("9. ...")
 # ...
 # st.markdown("**📌 이 그래프로 알 수 있는 것**")
 # st.info("여기에 이 그래프를 보고 파악한 내용을 한 문장으로 적어 보세요.")
