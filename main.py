@@ -247,9 +247,37 @@ st.info("여기에 이 그래프를 보고 파악한 내용을 한 문장으로 
 st.divider()
 
 # ---------------------------------------------------------------------------
-# 구역 7. (다음 그래프를 위한 자리)
+# 구역 7. 제작 국가 → 장르 선버스트 그래프
 # ---------------------------------------------------------------------------
-# st.header("7. ...")
+st.header("7. 제작 국가별 장르 구성")
+
+nation_genre_counts = (
+    df.groupby(["nation", "genre_main"]).size().reset_index(name="편수")
+)
+
+fig_sunburst = px.sunburst(
+    nation_genre_counts,
+    path=["nation", "genre_main"],
+    values="편수",
+)
+fig_sunburst.update_traces(
+    hovertemplate="%{label}<br>편수: %{value}편<extra></extra>",
+)
+fig_sunburst.update_layout(
+    margin=dict(t=30, b=30, l=10, r=10),
+)
+
+st.plotly_chart(fig_sunburst, use_container_width=True)
+
+st.markdown("**📌 이 그래프로 알 수 있는 것**")
+st.info("여기에 이 그래프를 보고 파악한 내용을 한 문장으로 적어 보세요.")
+
+st.divider()
+
+# ---------------------------------------------------------------------------
+# 구역 8. (다음 그래프를 위한 자리)
+# ---------------------------------------------------------------------------
+# st.header("8. ...")
 # ...
 # st.markdown("**📌 이 그래프로 알 수 있는 것**")
 # st.info("여기에 이 그래프를 보고 파악한 내용을 한 문장으로 적어 보세요.")
