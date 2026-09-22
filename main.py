@@ -206,9 +206,50 @@ st.info("여기에 이 그래프를 보고 파악한 내용을 한 문장으로 
 st.divider()
 
 # ---------------------------------------------------------------------------
-# 구역 6. (다음 그래프를 위한 자리)
+# 구역 6. 개봉일 스크린수 vs 총 관객 버블 그래프 (크기: 첫 주 관객)
 # ---------------------------------------------------------------------------
-# st.header("6. ...")
+st.header("6. 개봉일 스크린수와 총 관객의 관계 (첫 주 관객 크기 반영)")
+
+fig_bubble = px.scatter(
+    df,
+    x="first_scrn",
+    y="total_audi",
+    size="first_week_audi",
+    color="genre_main",
+    custom_data=["movieNm", "first_week_audi"],
+    labels={
+        "first_scrn": "개봉일 스크린수",
+        "total_audi": "총 관객 수",
+        "genre_main": "장르",
+    },
+    size_max=40,
+)
+fig_bubble.update_traces(
+    hovertemplate=(
+        "영화명: %{customdata[0]}<br>"
+        "개봉일 스크린수: %{x:,}개<br>"
+        "총 관객: %{y:,}명<br>"
+        "첫 주 관객: %{customdata[1]:,}명<extra></extra>"
+    ),
+)
+fig_bubble.update_layout(
+    xaxis_title="개봉일 스크린수",
+    yaxis_title="총 관객 수",
+    legend_title_text="장르",
+    margin=dict(t=30, b=30, l=10, r=10),
+)
+
+st.plotly_chart(fig_bubble, use_container_width=True)
+
+st.markdown("**📌 이 그래프로 알 수 있는 것**")
+st.info("여기에 이 그래프를 보고 파악한 내용을 한 문장으로 적어 보세요.")
+
+st.divider()
+
+# ---------------------------------------------------------------------------
+# 구역 7. (다음 그래프를 위한 자리)
+# ---------------------------------------------------------------------------
+# st.header("7. ...")
 # ...
 # st.markdown("**📌 이 그래프로 알 수 있는 것**")
 # st.info("여기에 이 그래프를 보고 파악한 내용을 한 문장으로 적어 보세요.")
