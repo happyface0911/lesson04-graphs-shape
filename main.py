@@ -298,19 +298,28 @@ nation_genre_pct = (
     .size()
     .reset_index(name="편수")
 )
+nation_genre_pct["비율"] = (
+    nation_genre_pct["편수"]
+    / nation_genre_pct.groupby("nation")["편수"].transform("sum")
+    * 100
+)
 
 fig_nation_genre = px.bar(
     nation_genre_pct,
     x="nation",
-    y="편수",
+    y="비율",
     color="genre_main",
-    barnorm="percent",
-    labels={"nation": "제작 국가", "편수": "비율(%)", "genre_main": "장르"},
+    custom_data=["편수"],
+    labels={"nation": "제작 국가", "비율": "비율(%)", "genre_main": "장르"},
 )
 fig_nation_genre.update_traces(
-    hovertemplate="국가: %{x}<br>장르: %{fullData.name}<br>비율: %{y:.1f}%<extra></extra>",
+    hovertemplate=(
+        "국가: %{x}<br>장르: %{fullData.name}<br>"
+        "비율: %{y:.1f}%<br>편수: %{customdata[0]}편<extra></extra>"
+    ),
 )
 fig_nation_genre.update_layout(
+    barmode="stack",
     xaxis_title="제작 국가",
     yaxis_title="장르 비율(%)",
     legend_title_text="장르",
