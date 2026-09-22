@@ -21,6 +21,11 @@ def load_data():
 
     # 장르에 세로막대(|) 기호로 여러 개가 적힌 경우 첫 번째 장르만 사용
     df["genre_main"] = df["genre"].astype(str).str.split("|").str[0].str.strip()
+    df.loc[df["genre_main"].isin(["nan", "None", ""]), "genre_main"] = "정보 없음"
+
+    # nation 열에 결측치나 숫자형 값이 섞여 있으면 그래프에서 타입 에러가 나므로 문자열로 통일
+    df["nation"] = df["nation"].astype(str).str.strip()
+    df.loc[df["nation"].isin(["nan", "None", ""]), "nation"] = "정보 없음"
 
     return df
 
