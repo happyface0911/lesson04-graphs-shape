@@ -67,9 +67,34 @@ st.info("여기에 이 그래프를 보고 파악한 내용을 한 문장으로 
 st.divider()
 
 # ---------------------------------------------------------------------------
-# 구역 2. (다음 그래프를 위한 자리)
+# 구역 2. 장르 안에 영화 - 총 관객 트리맵
 # ---------------------------------------------------------------------------
-# st.header("2. ...")
+st.header("2. 장르별 영화의 총 관객 트리맵")
+
+fig_treemap = px.treemap(
+    df,
+    path=[px.Constant("전체"), "genre_main", "movieNm"],
+    values="total_audi",
+    custom_data=["movieNm", "total_audi"],
+)
+fig_treemap.update_traces(
+    hovertemplate="영화명: %{customdata[0]}<br>총 관객: %{customdata[1]:,}명<extra></extra>",
+)
+fig_treemap.update_layout(
+    margin=dict(t=30, b=30, l=10, r=10),
+)
+
+st.plotly_chart(fig_treemap, use_container_width=True)
+
+st.markdown("**📌 이 그래프로 알 수 있는 것**")
+st.info("여기에 이 그래프를 보고 파악한 내용을 한 문장으로 적어 보세요.")
+
+st.divider()
+
+# ---------------------------------------------------------------------------
+# 구역 3. (다음 그래프를 위한 자리)
+# ---------------------------------------------------------------------------
+# st.header("3. ...")
 # ...
 # st.markdown("**📌 이 그래프로 알 수 있는 것**")
 # st.info("여기에 이 그래프를 보고 파악한 내용을 한 문장으로 적어 보세요.")
