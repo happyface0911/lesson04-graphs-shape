@@ -172,9 +172,43 @@ st.info("여기에 이 그래프를 보고 파악한 내용을 한 문장으로 
 st.divider()
 
 # ---------------------------------------------------------------------------
-# 구역 5. (다음 그래프를 위한 자리)
+# 구역 5. 장르별 총 관객 상자 그림 (10편 이상 장르만)
 # ---------------------------------------------------------------------------
-# st.header("5. ...")
+st.header("5. 장르별 총 관객 분포 (영화 10편 이상 장르만)")
+
+genre_movie_counts = df["genre_main"].value_counts()
+major_genres = genre_movie_counts[genre_movie_counts >= 10].index
+df_major = df[df["genre_main"].isin(major_genres)]
+
+fig_box = px.box(
+    df_major,
+    x="genre_main",
+    y="total_audi",
+    color="genre_main",
+    custom_data=["movieNm"],
+    labels={"genre_main": "장르", "total_audi": "총 관객 수"},
+)
+fig_box.update_traces(
+    hovertemplate="영화명: %{customdata[0]}<br>총 관객: %{y:,}명<extra></extra>",
+)
+fig_box.update_layout(
+    xaxis_title="장르",
+    yaxis_title="총 관객 수",
+    showlegend=False,
+    margin=dict(t=30, b=30, l=10, r=10),
+)
+
+st.plotly_chart(fig_box, use_container_width=True)
+
+st.markdown("**📌 이 그래프로 알 수 있는 것**")
+st.info("여기에 이 그래프를 보고 파악한 내용을 한 문장으로 적어 보세요.")
+
+st.divider()
+
+# ---------------------------------------------------------------------------
+# 구역 6. (다음 그래프를 위한 자리)
+# ---------------------------------------------------------------------------
+# st.header("6. ...")
 # ...
 # st.markdown("**📌 이 그래프로 알 수 있는 것**")
 # st.info("여기에 이 그래프를 보고 파악한 내용을 한 문장으로 적어 보세요.")
