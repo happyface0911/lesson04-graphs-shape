@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 import plotly.express as px
 
 st.set_page_config(
@@ -92,9 +93,54 @@ st.info("여기에 이 그래프를 보고 파악한 내용을 한 문장으로 
 st.divider()
 
 # ---------------------------------------------------------------------------
-# 구역 3. (다음 그래프를 위한 자리)
+# 구역 3. 총 관객 히스토그램
 # ---------------------------------------------------------------------------
-# st.header("3. ...")
+st.header("3. 총 관객 분포")
+
+fig_hist = px.histogram(
+    df,
+    x="total_audi",
+    nbins=20,
+    labels={"total_audi": "총 관객 수"},
+)
+fig_hist.update_traces(
+    hovertemplate="구간: %{x}<br>영화 수: %{y}편<extra></extra>",
+)
+fig_hist.update_layout(
+    xaxis_title="총 관객 수",
+    yaxis_title="영화 편수",
+    margin=dict(t=30, b=30, l=10, r=10),
+)
+
+st.plotly_chart(fig_hist, use_container_width=True)
+
+# 가장 영화가 몰려 있는 구간 계산
+counts, bin_edges = np.histogram(df["total_audi"].dropna(), bins=20)
+mode_idx = counts.argmax()
+mode_low, mode_high = bin_edges[mode_idx], bin_edges[mode_idx + 1]
+
+# 총 관객이 가장 많은 영화 계산
+top_row = df.loc[df["total_audi"].idxmax()]
+
+st.markdown("**📊 데이터로 본 사실**")
+st.write(
+    f"- 대부분의 영화는 총 관객 **{mode_low:,.0f}명 ~ {mode_high:,.0f}명** "
+    f"구간에 몰려 있습니다. (이 구간 영화 수: {counts[mode_idx]}편)"
+)
+st.write(
+    f"- 총 관객이 가장 많은 영화는 **{top_row['movieNm']}**"
+    f"(총 관객 {top_row['total_audi']:,.0f}명)입니다."
+)
+
+st.markdown("**📌 이 그래프로 알 수 있는 것**")
+st.info("여기에 이 그래프를 보고 파악한 내용을 한 문장으로 적어 보세요.")
+
+st.divider()
+
+# ---------------------------------------------------------------------------
+# 구역 4. (다음 그래프를 위한 자리)
+# ---------------------------------------------------------------------------
+# st.header("4. ...")
 # ...
 # st.markdown("**📌 이 그래프로 알 수 있는 것**")
 # st.info("여기에 이 그래프를 보고 파악한 내용을 한 문장으로 적어 보세요.")
